@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"strings"
 )
 
 func Test() {
-	currentFeatureBranch := getCurrentBranch()
-	if currentFeatureBranch == "main\n" || currentFeatureBranch == "test\n" {
-		log.Fatalf("You are on the main or on the test branch. Please switch to a feature branch first.")
+	currentFeatureBranch := strings.TrimSuffix(getCurrentBranch(), "\n")
+	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
+		log.Fatalf("You are on the main or on the test branch. Please switch to a feature branch first.\n")
 	}
-	fmt.Println("Merging feature branch into test...")
 
 	checkoutTestCmd := exec.Command("git", "checkout", "test")
 	output, err := checkoutTestCmd.CombinedOutput()
@@ -19,6 +19,7 @@ func Test() {
 		log.Fatalf("Error checking out test branch: %v\nOutput: %s", err, output)
 	}
 
+	fmt.Printf("Merging feature branch %v into test\n", currentFeatureBranch)
 	mergeTestCmd := exec.Command("git", "merge", currentFeatureBranch)
 	output, err = mergeTestCmd.CombinedOutput()
 	if err != nil {

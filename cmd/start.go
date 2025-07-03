@@ -1,19 +1,29 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"fmt"
+	"log"
+	"os/exec"
 )
 
-var startCmd = &cobra.Command{
-	Use:   "start [branch-name]",
-	Short: "Start a new feature branch",
-	Long:  `Start a new feature branch by creating a new branch in the git repository.`,
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		Start(args[0])
-	},
-}
+func Start(branchName string) {
 
-func init() {
-	rootCmd.AddCommand(startCmd)
+	if getCurrentBranch() != "main\n" {
+		log.Fatalf("You are not on the main branch. Please switch to the main branch before starting a new feature branch.")
+	}
+
+	fmt.Println("Creating new feature branch " + branchName)
+
+	checkoutCmd := exec.Command("git", "checkout", "-b", branchName)
+	output, err := checkoutCmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("Error creating new branch: %v\nOutput: %s", err, output)
+	}
+
+	pushCmd := exec.Command("git", "push", "-u", "origin", branchName)
+	output, err = pushCmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("Error pushing new branch to origin: %v\nOutput: %s", err, output)
+	}
+
 }

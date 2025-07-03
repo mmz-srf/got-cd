@@ -7,9 +7,9 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "git-cd",
+	Use:   "got-cd",
 	Short: "A wrapper for git commands",
-	Long:  `git-cd is a command-line tool that simplifies the usage of git commands by providing a more user-friendly interface.`,
+	Long:  `got-cd is a command-line tool that simplifies the usage of git commands by providing a more user-friendly interface.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()

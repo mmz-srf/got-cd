@@ -1,5 +1,5 @@
 build:
-	go build -o got-cd main.go
+	go build -o ./bin/got-cd main.go
 
 run:
 	go run main.go

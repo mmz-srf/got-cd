@@ -13,7 +13,8 @@ type Config struct {
 }
 
 func readConfigFile() Config {
-	configFile := "config.json"
+	currentWorkingDirectory := getCurrentWorkingDirectory()
+	configFile := currentWorkingDirectory + "/config.json"
 
 	fileBytes, err := os.ReadFile(configFile)
 	if err != nil {

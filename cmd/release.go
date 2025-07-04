@@ -25,7 +25,8 @@ func Release() {
 		}
 	}
 
-	releaseVersionFile, err := os.Open("version.txt")
+	currentWorkingDirectory := getCurrentWorkingDirectory()
+	releaseVersionFile, err := os.Open(currentWorkingDirectory + "/version.txt")
 	if err != nil {
 		log.Fatalf("Error opening version.txt: %v", err)
 	}

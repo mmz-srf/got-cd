@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -36,4 +38,12 @@ func getCurrentRepoName() string {
 	repoName := strings.TrimSpace(string(repoResult))
 
 	return repoName
+}
+
+func getCurrentWorkingDirectory() string {
+	currentWorkingDirectory, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Error getting current working directory: %v\n", err)
+	}
+	return currentWorkingDirectory
 }

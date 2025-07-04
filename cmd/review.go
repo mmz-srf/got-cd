@@ -30,15 +30,50 @@ func Preview() {
 	}
 	repoName := strings.TrimSpace(string(repoResult))
 
-	newPR := &github.NewPullRequest{
-		Title: github.String(fmt.Sprintf("Feature: %s", currentFeatureBranch)),
-		Head:  github.String(currentFeatureBranch),
-		Base:  github.String("main"),
+	existingOpenPRs, _, err := client.PullRequests.List(ctx, "michizubi-SRF", string(repoName), &github.PullRequestListOptions{
+		State: "open",
+		Head:  fmt.Sprintf("michizubi-SRF:%s", currentFeatureBranch),
+	})
+	if err != nil {
+		log.Fatalf("Error checking for existing PR: %v\n", err)
+	}
+	var foundExistingPR bool
+	var existingOpenPR *github.PullRequest
+	for _, existingPR := range existingOpenPRs {
+		if existingPR.GetTitle() == fmt.Sprintf("Feature: %s", currentFeatureBranch) {
+			foundExistingPR = true
+			existingOpenPR = existingPR
+			break
+		}
+	}
+	if foundExistingPR {
+		fmt.Println("PR already exists, do you want to open it in the browser? (y/n)")
+		var response string
+		fmt.Scan(&response)
+		if response == "y" {
+			_ = exec.Command("open", existingOpenPR.GetHTMLURL()).Start()
+		}
+	} else {
+
+		newPR := &github.NewPullRequest{
+			Title: github.String(fmt.Sprintf("Feature: %s", currentFeatureBranch)),
+			Head:  github.String(currentFeatureBranch),
+			Base:  github.String("main"),
+		}
+
+		pr, _, err := client.PullRequests.Create(ctx, "michizubi-SRF", string(repoName), newPR)
+		if err != nil {
+			log.Fatalf("Error creating pull request: %v\n", err)
+		}
+		fmt.Println("Do you want to open the PR in your browser? (y/n)")
+		var response string
+		fmt.Scan(&response)
+		if response == "y" {
+			err = exec.Command("open", pr.GetHTMLURL()).Start()
+			if err != nil {
+				log.Fatalf("Error opening PR in browser: %v\n", err)
+			}
+		}
 	}
 
-	pr, _, err := client.PullRequests.Create(ctx, "michizubi-SRF", string(repoName), newPR)
-	if err != nil {
-		log.Fatalf("Error creating pull request: %v\n", err)
-	}
-	fmt.Printf("PR created: %s\n", pr.GetHTMLURL())
 }

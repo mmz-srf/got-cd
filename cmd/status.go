@@ -5,19 +5,20 @@ import (
 	"log"
 
 	"github.com/google/go-github/v53/github"
+	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
 func Status() {
-	currentFeatureBranch := getCurrentFeatureBranch()
-	repoName := getCurrentRepoName()
+	currentFeatureBranch := helper.GetCurrentFeatureBranch()
+	repoName := helper.GetCurrentRepoName()
 
 	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
 		log.Fatalf("You are on the main or on the test branch. Please switch to a feature branch first.\n")
 	}
 
-	ctx, client := Authenticate()
+	ctx, client := helper.Authenticate()
 
-	config := readConfigFile()
+	config := helper.ReadConfigFile()
 	githubOrganization := config.GithubOrganization
 	existingOpenPRs, _, err := client.PullRequests.List(ctx, githubOrganization, string(repoName), &github.PullRequestListOptions{
 		Head: fmt.Sprint(currentFeatureBranch),

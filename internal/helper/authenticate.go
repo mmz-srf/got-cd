@@ -1,4 +1,4 @@
-package cmd
+package helper
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 func Authenticate() (context.Context, github.Client) {
-	config := readConfigFile()
+	config := ReadConfigFile()
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: config.GithubAccessToken},

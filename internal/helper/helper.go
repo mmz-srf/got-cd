@@ -1,4 +1,4 @@
-package cmd
+package helper
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func getCurrentBranch() string {
+func GetCurrentBranch() string {
 	currentBranchCmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
 	currentBranchOutput, err := currentBranchCmd.CombinedOutput()
 	if err != nil {
@@ -18,13 +18,13 @@ func getCurrentBranch() string {
 	return string(currentBranchOutput)
 }
 
-func getCurrentFeatureBranch() string {
-	currentFeatureBranch := strings.TrimSuffix(getCurrentBranch(), "\n")
+func GetCurrentFeatureBranch() string {
+	currentFeatureBranch := strings.TrimSuffix(GetCurrentBranch(), "\n")
 
 	return currentFeatureBranch
 }
 
-func getCurrentRepoName() string {
+func GetCurrentRepoName() string {
 	currentRepoPathOutput := exec.Command("git", "rev-parse", "--show-toplevel")
 	currentRepoPath, err := currentRepoPathOutput.CombinedOutput()
 	if err != nil {
@@ -40,7 +40,7 @@ func getCurrentRepoName() string {
 	return repoName
 }
 
-func getCurrentWorkingDirectory() string {
+func GetCurrentWorkingDirectory() string {
 	currentWorkingDirectory, err := os.Getwd()
 	if err != nil {
 		fmt.Printf("Error getting current working directory: %v\n", err)

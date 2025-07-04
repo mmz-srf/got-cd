@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+
+	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
 func Start(branchName string) {
 
-	if getCurrentBranch() != "main\n" {
+	if helper.GetCurrentBranch() != "main\n" {
 		log.Fatalf("You are not on the main branch. Please switch to the main branch before starting a new feature branch.")
 	}
 

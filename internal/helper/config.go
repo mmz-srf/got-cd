@@ -1,4 +1,4 @@
-package cmd
+package helper
 
 import (
 	"bytes"
@@ -12,8 +12,8 @@ type Config struct {
 	GithubOrganization string `json:"github_organization"`
 }
 
-func readConfigFile() Config {
-	currentWorkingDirectory := getCurrentWorkingDirectory()
+func ReadConfigFile() Config {
+	currentWorkingDirectory := GetCurrentWorkingDirectory()
 	configFile := currentWorkingDirectory + "/config.json"
 
 	fileBytes, err := os.ReadFile(configFile)

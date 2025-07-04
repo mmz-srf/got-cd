@@ -8,10 +8,12 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
 func Release() {
-	currentFeatureBranch := strings.TrimSuffix(getCurrentBranch(), "\n")
+	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
 	if currentFeatureBranch != "main" {
 		println("You are not on the main branch. Please switch to the main branch before releasing.")
 		fmt.Println("Do you want to switch to the main branch? (y/n)")
@@ -25,7 +27,7 @@ func Release() {
 		}
 	}
 
-	currentWorkingDirectory := getCurrentWorkingDirectory()
+	currentWorkingDirectory := helper.GetCurrentWorkingDirectory()
 	releaseVersionFile, err := os.Open(currentWorkingDirectory + "/version.txt")
 	if err != nil {
 		log.Fatalf("Error opening version.txt: %v", err)

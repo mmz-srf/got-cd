@@ -5,10 +5,12 @@ import (
 	"log"
 	"os/exec"
 	"strings"
+
+	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
 func Test() {
-	currentFeatureBranch := strings.TrimSuffix(getCurrentBranch(), "\n")
+	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
 	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
 		log.Fatalf("You are on the main or on the test branch. Please switch to a feature branch first.\n")
 	}

@@ -34,8 +34,19 @@ var reviewCmd = &cobra.Command{
 	},
 }
 
+var releaseCmd = &cobra.Command{
+	Use:   "release",
+	Short: "Create a new release",
+	Long:  `Create a new release by pushing a new tag based on version.txt`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		Release()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(reviewCmd)
+	rootCmd.AddCommand(releaseCmd)
 }

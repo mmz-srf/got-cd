@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
-	"strings"
 
 	"github.com/google/go-github/v53/github"
 )
 
 func Preview() {
-	currentFeatureBranch := strings.TrimSuffix(getCurrentBranch(), "\n")
+	currentFeatureBranch := getCurrentFeatureBranch()
+	repoName := getCurrentRepoName()
+
 	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
 		log.Fatalf("You are on the main or on the test branch. Please switch to a feature branch first.\n")
 	}
@@ -18,21 +19,11 @@ func Preview() {
 	fmt.Printf("Creating pull request from feature branch %v to main\n", currentFeatureBranch)
 	ctx, client := Authenticate()
 
-	currentRepoPathOutput := exec.Command("git", "rev-parse", "--show-toplevel")
-	currentRepoPath, err := currentRepoPathOutput.CombinedOutput()
-	if err != nil {
-		log.Fatalf("Error getting current repository path: %v\nOutput: %s", err, currentRepoPath)
-	}
-	currentRepoName := exec.Command("basename", string(currentRepoPath))
-	repoResult, err := currentRepoName.CombinedOutput()
-	if err != nil {
-		log.Fatalf("Error getting current repository name: %v\nOutput: %s", err, repoResult)
-	}
-	repoName := strings.TrimSpace(string(repoResult))
-
-	existingOpenPRs, _, err := client.PullRequests.List(ctx, "michizubi-SRF", string(repoName), &github.PullRequestListOptions{
+	config := readConfigFile()
+	githubOrganization := config.GithubOrganization
+	existingOpenPRs, _, err := client.PullRequests.List(ctx, githubOrganization, string(repoName), &github.PullRequestListOptions{
 		State: "open",
-		Head:  fmt.Sprintf("michizubi-SRF:%s", currentFeatureBranch),
+		Head:  fmt.Sprint(currentFeatureBranch),
 	})
 	if err != nil {
 		log.Fatalf("Error checking for existing PR: %v\n", err)
@@ -40,7 +31,7 @@ func Preview() {
 	var foundExistingPR bool
 	var existingOpenPR *github.PullRequest
 	for _, existingPR := range existingOpenPRs {
-		if existingPR.GetTitle() == fmt.Sprintf("Feature: %s", currentFeatureBranch) {
+		if existingPR.GetTitle() == fmt.Sprint(currentFeatureBranch) {
 			foundExistingPR = true
 			existingOpenPR = existingPR
 			break

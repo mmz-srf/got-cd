@@ -8,7 +8,8 @@ import (
 )
 
 type Config struct {
-	GithubAccessToken string `json:"github_access_token"`
+	GithubAccessToken  string `json:"github_access_token"`
+	GithubOrganization string `json:"github_organization"`
 }
 
 func readConfigFile() Config {

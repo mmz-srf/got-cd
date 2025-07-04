@@ -37,10 +37,20 @@ var reviewCmd = &cobra.Command{
 var releaseCmd = &cobra.Command{
 	Use:   "release",
 	Short: "Create a new release",
-	Long:  `Create a new release by pushing a new tag based on version.txt`,
+	Long:  `Create a new release by pushing a new tag based on version.txt.`,
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		Release()
+	},
+}
+
+var statusCmd = &cobra.Command{
+	Use:   "status",
+	Short: "Get the status of an open pull request",
+	Long:  `Get the status of an open pull request from the current feature branch.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		Status()
 	},
 }
 
@@ -49,4 +59,5 @@ func init() {
 	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(reviewCmd)
 	rootCmd.AddCommand(releaseCmd)
+	rootCmd.AddCommand(statusCmd)
 }

@@ -24,8 +24,8 @@ var testCmd = &cobra.Command{
 	},
 }
 
-var previewCmd = &cobra.Command{
-	Use:   "preview",
+var reviewCmd = &cobra.Command{
+	Use:   "review",
 	Short: "Create a pull request from feature branch to main",
 	Long:  `Create a pull request from the current feature branch to the main branch in the git repository.`,
 	Args:  cobra.ExactArgs(0),
@@ -37,5 +37,5 @@ var previewCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
-	rootCmd.AddCommand(previewCmd)
+	rootCmd.AddCommand(reviewCmd)
 }

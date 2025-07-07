@@ -13,9 +13,12 @@ type Config struct {
 }
 
 func ReadConfigFile() Config {
-	currentWorkingDirectory := GetCurrentWorkingDirectory()
-	configFile := currentWorkingDirectory + "/config.json"
-
+	// currentWorkingDirectory := GetCurrentWorkingDirectory()
+	usersHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Printf("Error getting user home directory: %v\n", err)
+	}
+	configFile := usersHomeDir + "/.got-cd/config.json"
 	fileBytes, err := os.ReadFile(configFile)
 	if err != nil {
 		fmt.Printf("Error opening config file: %v\n", err)

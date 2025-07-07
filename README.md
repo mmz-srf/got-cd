@@ -12,3 +12,6 @@ Go implementation of https://github.com/gitcd-io/gitcd for learning purposes
 ```
 ./bin/got-cd -h
 ```
+3. Create Config file
+```
+cp example.config.json /Users/<users>/.got-cd/config.json

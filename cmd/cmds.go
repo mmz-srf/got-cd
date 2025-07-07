@@ -64,6 +64,16 @@ var finishCmd = &cobra.Command{
 	},
 }
 
+var cleanCmd = &cobra.Command{
+	Use:   "clean",
+	Short: "Clean up local branches",
+	Long:  `Clean up local branches that are not present on remote anymore.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		Clean()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
@@ -71,4 +81,5 @@ func init() {
 	rootCmd.AddCommand(releaseCmd)
 	rootCmd.AddCommand(statusCmd)
 	rootCmd.AddCommand(finishCmd)
+	rootCmd.AddCommand(cleanCmd)
 }

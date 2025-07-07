@@ -9,7 +9,7 @@ import (
 )
 
 func GetCurrentBranch() string {
-	currentBranchCmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+	currentBranchCmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	currentBranchOutput, err := currentBranchCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf("error getting current branch: %v\nOutput: %s", err, currentBranchOutput)

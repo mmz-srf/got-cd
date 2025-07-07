@@ -22,7 +22,7 @@ func Start(branchName string) {
 		log.Fatalf("Error creating new branch: %v\nOutput: %s", err, output)
 	}
 
-	pushCmd := exec.Command("git", "push", "-u", "origin", branchName)
+	pushCmd := exec.Command("git", "push", "--set-upstream", "origin", branchName)
 	output, err = pushCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf("Error pushing new branch to origin: %v\nOutput: %s", err, output)

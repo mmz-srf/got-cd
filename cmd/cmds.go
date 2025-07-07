@@ -54,10 +54,21 @@ var statusCmd = &cobra.Command{
 	},
 }
 
+var finishCmd = &cobra.Command{
+	Use:   "finish",
+	Short: "Merge the feature branch into main",
+	Long:  `Merge the feature branch into main.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		Status()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
 	rootCmd.AddCommand(reviewCmd)
 	rootCmd.AddCommand(releaseCmd)
 	rootCmd.AddCommand(statusCmd)
+	rootCmd.AddCommand(finishCmd)
 }

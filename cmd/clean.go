@@ -6,29 +6,30 @@ import (
 	"os/exec"
 	"slices"
 	"strings"
-
-	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
 func Clean() {
-	currentBranch := helper.GetCurrentBranch()
-
 	remoteBranches, err := getRemoteBranches()
 	if err != nil {
-		log.Fatalf("Error getting remote branches:", err)
+		log.Fatal("Error getting remote branches:", err)
 	}
 
 	localBranches, err := getLocalBranches()
 	if err != nil {
-		log.Fatalf("Error getting local branches:", err)
+		log.Fatal("Error getting local branches:", err)
 	}
 
 	for _, localBranch := range localBranches {
-		if !slices.Contains(remoteBranches, localBranch) && localBranch != currentBranch {
-			fmt.Println("Deleting local branch:", localBranch)
-			cmd := exec.Command("git", "branch", "-d", localBranch)
-			if err := cmd.Run(); err != nil {
-				log.Fatalf("Error deleting local branch %s: %v\n", localBranch, err)
+		if !slices.Contains(remoteBranches, localBranch) {
+			fmt.Println("Found local branch not available on remote:", localBranch)
+			fmt.Println("Do you want to delete this branch? (y/n)")
+			var response string
+			fmt.Scan(&response)
+			if response == "y" {
+				cmd := exec.Command("git", "branch", "-d", localBranch)
+				if err := cmd.Run(); err != nil {
+					log.Fatalf("Error deleting local branch %s: %v\n", localBranch, err)
+				}
 			}
 		}
 	}
@@ -36,7 +37,11 @@ func Clean() {
 
 // Get all remote branches
 func getRemoteBranches() ([]string, error) {
-	cmd := exec.Command("git", "branch", "-r")
+	cmd := exec.Command("git", "fetch", "--prune")
+	if err := cmd.Run(); err != nil {
+		return nil, fmt.Errorf("error fetching remote branches: %w", err)
+	}
+	cmd = exec.Command("git", "branch", "-r")
 	output, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("error getting remote branches: %w", err)

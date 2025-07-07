@@ -3,7 +3,6 @@ package helper
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 )
@@ -21,7 +20,7 @@ func ReadConfigFile() Config {
 	configFile := usersHomeDir + "/.got-cd/config.json"
 	fileBytes, err := os.ReadFile(configFile)
 	if err != nil {
-		fmt.Printf("Error opening config file: %v\n", err)
+		log.Fatalf("Error opening config file: %v\n", err)
 	}
 
 	var config Config

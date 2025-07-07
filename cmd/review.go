@@ -5,7 +5,7 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v73/github"
 	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 

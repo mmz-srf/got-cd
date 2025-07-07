@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -13,10 +14,9 @@ type Config struct {
 }
 
 func ReadConfigFile() Config {
-	// currentWorkingDirectory := GetCurrentWorkingDirectory()
 	usersHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Printf("Error getting user home directory: %v\n", err)
+		log.Fatalf("Error getting user home directory: %v\n", err)
 	}
 	configFile := usersHomeDir + "/.got-cd/config.json"
 	fileBytes, err := os.ReadFile(configFile)

@@ -31,4 +31,15 @@ func Finish() {
 	if err := pushCmd.Run(); err != nil {
 		log.Fatalf("Error pushing changes to main branch: %v\n", err)
 	}
+
+	fmt.Println("Do you want to delete your feature branch? (y/n)")
+	var response string
+	fmt.Scan(&response)
+	if response == "y" {
+		deleteBranchCmd := exec.Command("git", "branch", "-d", currentFeatureBranch)
+		if err := deleteBranchCmd.Run(); err != nil {
+			log.Fatalf("Error deleting feature branch: %v\n", err)
+		}
+		fmt.Printf("Feature branch %s deleted.\n", currentFeatureBranch)
+	}
 }

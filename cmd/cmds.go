@@ -60,7 +60,7 @@ var finishCmd = &cobra.Command{
 	Long:  `Merge the feature branch into main.`,
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		Status()
+		Finish()
 	},
 }
 

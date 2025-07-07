@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os/exec"
 	"slices"
 	"strings"
@@ -14,12 +15,12 @@ func Clean() {
 
 	remoteBranches, err := getRemoteBranches()
 	if err != nil {
-		fmt.Println("Error getting remote branches:", err)
+		log.Fatalf("Error getting remote branches:", err)
 	}
 
 	localBranches, err := getLocalBranches()
 	if err != nil {
-		fmt.Println("Error getting local branches:", err)
+		log.Fatalf("Error getting local branches:", err)
 	}
 
 	for _, localBranch := range localBranches {
@@ -27,7 +28,7 @@ func Clean() {
 			fmt.Println("Deleting local branch:", localBranch)
 			cmd := exec.Command("git", "branch", "-d", localBranch)
 			if err := cmd.Run(); err != nil {
-				fmt.Printf("Error deleting local branch %s: %v\n", localBranch, err)
+				log.Fatalf("Error deleting local branch %s: %v\n", localBranch, err)
 			}
 		}
 	}

@@ -27,7 +27,7 @@ func Preview() {
 		Head:  fmt.Sprint(currentFeatureBranch),
 	})
 	if err != nil {
-		log.Fatalf(helper.FormatMessage("Error checking for existing PR: %v\n", "error"), err)
+		fmt.Print(helper.FormatMessage("No existing PR found, opening a new one.\n", "info"))
 	}
 	var foundExistingPR bool
 	var existingOpenPR *github.PullRequest
@@ -53,7 +53,7 @@ func Preview() {
 			Base:  github.String("main"),
 		}
 
-		pr, _, err := client.PullRequests.Create(ctx, "michizubi-SRF", string(repoName), newPR)
+		pr, _, err := client.PullRequests.Create(ctx, githubOrganization, string(repoName), newPR)
 		if err != nil {
 			log.Fatalf(helper.FormatMessage("Error creating pull request: %v\n", "error"), err)
 		}

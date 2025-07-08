@@ -39,7 +39,7 @@ func Release() {
 		log.Fatalf(helper.FormatMessage("Error reading version.txt: %v", "error"), err)
 	}
 
-	fmt.Println(helper.FormatMessage("Releasing version:", "info"), string(releaseVersion))
+	fmt.Printf(helper.FormatMessage("Releasing version: %s", "info"), string(releaseVersion))
 	fmt.Println((helper.FormatMessage("What is this release about?", "info")))
 	var releaseMessage string
 	reader := bufio.NewReader(os.Stdin)

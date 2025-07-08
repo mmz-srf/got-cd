@@ -38,7 +38,6 @@ func Clean() {
 	}
 }
 
-// Get all remote branches
 func getRemoteBranches() ([]string, error) {
 	cmd := exec.Command("git", "fetch", "--prune")
 	if err := cmd.Run(); err != nil {

@@ -11,7 +11,7 @@ import (
 func Finish() {
 	currentFeatureBranch := helper.GetCurrentFeatureBranch()
 	if currentFeatureBranch == "main" {
-		fmt.Println(helper.FormatMessage("You are on the main branch. Switch to your feature branch first.", "warning"))
+		log.Fatal(helper.FormatMessage("You are on the main branch. Switch to your feature branch first.", "error"))
 	}
 
 	fmt.Printf(helper.FormatMessage("Mergin feature branch %s into main\n", "info"), currentFeatureBranch)

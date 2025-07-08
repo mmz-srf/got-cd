@@ -27,6 +27,10 @@ func Status() {
 		log.Fatalf("Error checking for existing PR: %v\n", err)
 	}
 
+	if len(existingOpenPRs) == 0 {
+		log.Fatalf("No open PR found for branch %s. Please create a PR first.\n", currentFeatureBranch)
+	}
+
 	for _, existingPR := range existingOpenPRs {
 		if existingPR.GetTitle() == fmt.Sprint(currentFeatureBranch) {
 			fmt.Printf("State of the PR is: %v \n", existingPR.GetState())

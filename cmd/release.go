@@ -49,11 +49,12 @@ func Release() {
 	}
 	releaseMessage = strings.TrimSpace(releaseMessage)
 	versionTag := "v" + string(releaseVersion)
-	releaseCmd, err := exec.Command("git", "tag", "-a", versionTag, "-m", releaseMessage).CombinedOutput()
+	versionTagTrimmed := strings.TrimSuffix(versionTag, "\n")
+	releaseCmd, err := exec.Command("git", "tag", "-a", "-m", releaseMessage, versionTagTrimmed).CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error creating release tag: %v\n%s", "error"), err, releaseCmd)
 	}
-	tagPushCmd, err := exec.Command("git", "push", "origin", versionTag).CombinedOutput()
+	tagPushCmd, err := exec.Command("git", "push", "origin", versionTagTrimmed).CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error pushing release tag to origin: %v\n%s", "error"), err, tagPushCmd)
 	}

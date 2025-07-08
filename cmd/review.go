@@ -48,7 +48,7 @@ func Preview() {
 	} else {
 
 		newPR := &github.NewPullRequest{
-			Title: github.String(fmt.Sprintf("Feature: %s", currentFeatureBranch)),
+			Title: github.String(fmt.Sprint(currentFeatureBranch)),
 			Head:  github.String(currentFeatureBranch),
 			Base:  github.String("main"),
 		}

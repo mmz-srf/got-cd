@@ -3,6 +3,7 @@ package cmd
 import (
 	"log"
 
+	"github.com/michizubi-SRF/got-cd/internal/helper"
 	"github.com/spf13/cobra"
 )
 
@@ -18,6 +19,6 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatalf("Error executing command: %v", err)
+		log.Fatalf(helper.FormatMessage("Error executing command: %v", "error"), err)
 	}
 }

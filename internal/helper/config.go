@@ -15,12 +15,12 @@ type Config struct {
 func ReadConfigFile() Config {
 	usersHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatalf("Error getting user home directory: %v\n", err)
+		log.Fatalf(FormatMessage("Error getting user home directory: %v\n", "error"), err)
 	}
 	configFile := usersHomeDir + "/.got-cd/config.json"
 	fileBytes, err := os.ReadFile(configFile)
 	if err != nil {
-		log.Fatalf("Error opening config file: %v\n", err)
+		log.Fatalf(FormatMessage("Error opening config file: %v\n", "error"), err)
 	}
 
 	var config Config

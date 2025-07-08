@@ -14,10 +14,10 @@ func Preview() {
 	repoName := helper.GetCurrentRepoName()
 
 	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
-		log.Fatalf("You are on the main or on the test branch. Please switch to a feature branch first.\n")
+		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 
-	fmt.Printf("Creating pull request from feature branch %v to main\n", currentFeatureBranch)
+	fmt.Printf(helper.FormatMessage("Creating pull request from feature branch %v to main\n", "info"), currentFeatureBranch)
 	ctx, client := helper.Authenticate()
 
 	config := helper.ReadConfigFile()
@@ -27,7 +27,7 @@ func Preview() {
 		Head:  fmt.Sprint(currentFeatureBranch),
 	})
 	if err != nil {
-		log.Fatalf("Error checking for existing PR: %v\n", err)
+		log.Fatalf(helper.FormatMessage("Error checking for existing PR: %v\n", "error"), err)
 	}
 	var foundExistingPR bool
 	var existingOpenPR *github.PullRequest
@@ -39,7 +39,7 @@ func Preview() {
 		}
 	}
 	if foundExistingPR {
-		fmt.Println("PR already exists, do you want to open it in the browser? (y/n)")
+		fmt.Println(helper.FormatMessage("PR already exists, do you want to open it in the browser? (y/n)", "warning"))
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {
@@ -55,15 +55,15 @@ func Preview() {
 
 		pr, _, err := client.PullRequests.Create(ctx, "michizubi-SRF", string(repoName), newPR)
 		if err != nil {
-			log.Fatalf("Error creating pull request: %v\n", err)
+			log.Fatalf(helper.FormatMessage("Error creating pull request: %v\n", "error"), err)
 		}
-		fmt.Println("Do you want to open the PR in your browser? (y/n)")
+		fmt.Println(helper.FormatMessage("Do you want to open the PR in your browser? (y/n)", "info"))
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {
 			err = exec.Command("open", pr.GetHTMLURL()).Start()
 			if err != nil {
-				log.Fatalf("Error opening PR in browser: %v\n", err)
+				log.Fatalf(helper.FormatMessage("Error opening PR in browser: %v\n", "error"), err)
 			}
 		}
 	}

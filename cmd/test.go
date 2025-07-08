@@ -10,25 +10,26 @@ import (
 )
 
 func Test() {
+	devBranch := helper.GetDevBranch()
 	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
 	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
 		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 
-	checkoutTestCmd := exec.Command("git", "checkout", "test")
+	checkoutTestCmd := exec.Command("git", "checkout", devBranch)
 	output, err := checkoutTestCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error checking out test branch: %v\n%s", "error"), err, output)
 	}
 
-	fmt.Printf("Merging feature branch %v into test\n", currentFeatureBranch)
+	fmt.Printf("Merging feature branch %v into test-branch\n", currentFeatureBranch)
 	mergeTestCmd := exec.Command("git", "merge", currentFeatureBranch)
 	output, err = mergeTestCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error merging feature branch into test: %v\n%s", "error"), err, output)
 	}
 
-	pushTestCmd := exec.Command("git", "push", "origin", "test")
+	pushTestCmd := exec.Command("git", "push", "origin", devBranch)
 	output, err = pushTestCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error pushing test branch to origin: %v\n%s", "error"), err, output)

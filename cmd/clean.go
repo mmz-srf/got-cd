@@ -17,7 +17,7 @@ func Clean() {
 		log.Fatal(helper.FormatMessage("Error getting remote branches:", "error"), err)
 	}
 
-	localBranches, err := getLocalBranches()
+	localBranches, err := helper.GetLocalBranches()
 	if err != nil {
 		log.Fatal(helper.FormatMessage("Error getting local branches:", "error"), err)
 	}
@@ -59,22 +59,4 @@ func getRemoteBranches() ([]string, error) {
 	}
 
 	return remoteBranches, nil
-}
-
-func getLocalBranches() ([]string, error) {
-	cmd := exec.Command("git", "branch")
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("error getting local branches: %w", err)
-	}
-
-	branches := strings.Split(string(output), "\n")
-	var localBranches []string
-	for _, localBranch := range branches {
-		localBranchCleaned := strings.Replace(string(localBranch), "* ", "", 1)
-		localBranchTrimmed := strings.TrimSpace(localBranchCleaned)
-		localBranches = append(localBranches, localBranchTrimmed)
-	}
-
-	return localBranches, nil
 }

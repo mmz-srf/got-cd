@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -59,4 +60,39 @@ func FormatMessage(message string, level string) string {
 	default:
 		return message
 	}
+}
+
+func GetDevBranch() string {
+	branches, err := GetLocalBranches()
+	var devBranch string
+	if err != nil {
+		log.Fatalf(FormatMessage("Error getting local branches: %v", "error"), err)
+	}
+
+	for _, branch := range branches {
+		if matched, _ := regexp.MatchString("^(test|dev)-.*", branch); matched {
+			devBranch = branch
+		}
+	}
+
+	return devBranch
+
+}
+
+func GetLocalBranches() ([]string, error) {
+	cmd := exec.Command("git", "branch")
+	output, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("error getting local branches: %w", err)
+	}
+
+	branches := strings.Split(string(output), "\n")
+	var localBranches []string
+	for _, localBranch := range branches {
+		localBranchCleaned := strings.Replace(string(localBranch), "* ", "", 1)
+		localBranchTrimmed := strings.TrimSpace(localBranchCleaned)
+		localBranches = append(localBranches, localBranchTrimmed)
+	}
+
+	return localBranches, nil
 }

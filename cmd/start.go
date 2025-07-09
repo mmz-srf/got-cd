@@ -10,6 +10,8 @@ import (
 
 func Start(branchName string) {
 
+	branchName = helper.ReplaceSpacesWithDashes(branchName)
+
 	if helper.GetCurrentBranch() != "main\n" {
 		log.Fatal(helper.FormatMessage("You are not on the main branch. Please switch to the main branch before starting a new feature branch.", "warning"))
 	}
@@ -27,4 +29,17 @@ func Start(branchName string) {
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error pushing new branch to origin: %v\n%s", "error"), err, output)
 	}
+}
+
+func StartAsk() {
+	branchName, err := helper.AskForInput("Enter the name of the new feature branch:")
+	if err != nil {
+		log.Fatalf(helper.FormatMessage("Error reading input: %v", "error"), err)
+	}
+
+	if branchName == "" {
+		log.Fatal(helper.FormatMessage("Branch name cannot be empty.", "error"))
+	}
+
+	Start(branchName)
 }

@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -114,4 +115,17 @@ func GetRemoteBranches() ([]string, error) {
 	}
 
 	return localBranches, nil
+}
+
+func AskForInput(prompt string) (string, error) {
+	fmt.Print(prompt + " ")
+	reader := bufio.NewReader(os.Stdin)
+	text, err := reader.ReadString('\n')
+	text = strings.TrimSpace(text)
+	return text, err
+}
+
+func ReplaceSpacesWithDashes(input string) string {
+	re := regexp.MustCompile(`\s+`)
+	return re.ReplaceAllString(input, "-")
 }

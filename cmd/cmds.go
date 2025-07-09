@@ -74,6 +74,16 @@ var cleanCmd = &cobra.Command{
 	},
 }
 
+var versionCmd = &cobra.Command{
+	Use:   "version",
+	Short: "Print the version of got-cd",
+	Long:  `Print the version of got-cd.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		println(GetVersion())
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
@@ -82,4 +92,5 @@ func init() {
 	rootCmd.AddCommand(statusCmd)
 	rootCmd.AddCommand(finishCmd)
 	rootCmd.AddCommand(cleanCmd)
+	rootCmd.AddCommand(versionCmd)
 }

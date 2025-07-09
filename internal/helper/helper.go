@@ -115,3 +115,12 @@ func GetRemoteBranches() ([]string, error) {
 
 	return localBranches, nil
 }
+
+func GetRemoteUrl() (string, error) {
+	cmd := exec.Command("git", "remote", "get-url", "origin") // TODO: The remote name "origin" is hardcoded, consider making it configurable
+	output, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("error getting remote URL: %w", err)
+	}
+	return strings.TrimSpace(string(output)), nil
+}

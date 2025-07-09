@@ -84,6 +84,16 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+var openCmd = &cobra.Command{
+	Use:   "open",
+	Short: "Open the current feature branch in the browser",
+	Long:  `Open the current feature branch in the browser.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		Open()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
@@ -93,4 +103,5 @@ func init() {
 	rootCmd.AddCommand(finishCmd)
 	rootCmd.AddCommand(cleanCmd)
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(openCmd)
 }

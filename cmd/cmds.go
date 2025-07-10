@@ -101,6 +101,16 @@ var openCmd = &cobra.Command{
 	},
 }
 
+var loginCmd = &cobra.Command{
+	Use:   "login",
+	Short: "Login to GitHub",
+	Long:  `Login to GitHub by providing your access token.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		login()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
@@ -111,4 +121,5 @@ func init() {
 	rootCmd.AddCommand(cleanCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(openCmd)
+	rootCmd.AddCommand(loginCmd)
 }

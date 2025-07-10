@@ -30,6 +30,10 @@ func login() {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	fmt.Println("Welcome to got-cd! Please log in to GitHub to continue.")
+	fmt.Println("You will need a GitHub access toke (classic) with the 'repo' scope to use this tool.")
+	fmt.Println("If you don't have a token yet, you can create one at https://github.com/settings/tokens\n\n")
+
 	fmt.Print("Enter your GitHub access token: ")
 	token, _ := reader.ReadString('\n')
 	token = strings.TrimSpace(token)

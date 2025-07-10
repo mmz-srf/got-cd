@@ -1,3 +1,4 @@
 /bin
 .vscode
 config.json
+cmd/VERSION

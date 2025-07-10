@@ -8,9 +8,16 @@ var startCmd = &cobra.Command{
 	Use:   "start [branch-name]",
 	Short: "Start a new feature branch",
 	Long:  `Start a new feature branch by creating a new branch in the git repository.`,
-	Args:  cobra.ExactArgs(1),
+	//Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		Start(args[0])
+		if len(args) == 0 {
+			StartAsk()
+			return
+		}
+		if len(args) == 1 {
+			Start(args[0])
+			return
+		}
 	},
 }
 

@@ -8,7 +8,8 @@ on:
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
-  workflow_dispatch:
+  #workflow_dispatch: 
+  #  dispatch fails uploading artifacts to GitHub release, so it is disabled for now
 
 permissions:
   contents: write

@@ -123,7 +123,19 @@ func GetRemoteUrl() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error getting remote URL: %w", err)
 	}
-	return strings.TrimSpace(string(output)), nil
+
+	repoUrl := strings.TrimSpace(string(output))
+
+	if len(repoUrl) > 0 && strings.HasPrefix(repoUrl, "git@") {
+		// Pattern: git@hostname:username/repository.git
+		// Example: git@github.com:mmz-srf/got-cd.git
+		gitUrlPattern := regexp.MustCompile(`^git@([^:]+):(.+)\.git$`)
+		if matches := gitUrlPattern.FindStringSubmatch(repoUrl); matches != nil {
+			repoUrl = fmt.Sprintf("https://%s/%s", matches[1], matches[2])
+		}
+	}
+
+	return strings.TrimSpace(repoUrl), nil
 }
 
 func AskForInput(prompt string) (string, error) {

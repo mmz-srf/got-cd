@@ -1,3 +1,5 @@
+Do not merge
+
 # got-cd
 
 Go implementation of https://github.com/gitcd-io/gitcd for learning purposes

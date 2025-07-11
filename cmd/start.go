@@ -12,8 +12,8 @@ func Start(branchName string) {
 
 	branchName = helper.ReplaceSpacesWithDashes(branchName)
 
-	if helper.GetCurrentBranch() != "main\n" {
-		log.Fatal(helper.FormatMessage("You are not on the main branch. Please switch to the main branch before starting a new feature branch.", "warning"))
+	if helper.GetCurrentBranch() != "main\n" || helper.GetCurrentBranch() != "master\n" {
+		log.Fatal(helper.FormatMessage("You are not on the main/master branch. Please switch to the main branch before starting a new feature branch.", "warning"))
 	}
 
 	fmt.Printf(helper.FormatMessage("Creating new branch: %s", "info"), branchName)

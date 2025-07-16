@@ -10,7 +10,7 @@ Go implementation of https://github.com/gitcd-io/gitcd for learning purposes
 ```
 2. Run binary
 ```
-./bin/got-cd -h
+./bin/git-cd -h
 ```
 3. Create Config file
 ```

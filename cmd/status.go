@@ -18,7 +18,11 @@ func Status() {
 
 	ctx, client := helper.Authenticate()
 
-	config := helper.ReadConfigFile()
+	config, err := helper.ReadConfigFile()
+	if err != nil {
+		log.Fatalf(helper.FormatMessage("Status: Error opening config file: %v\n", "error"), err)
+	}
+
 	githubOrganization := config.GithubOrganization
 	existingOpenPRs, _, err := client.PullRequests.List(ctx, githubOrganization, string(repoName), &github.PullRequestListOptions{
 		Head: fmt.Sprint(currentFeatureBranch),

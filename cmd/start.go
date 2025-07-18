@@ -12,7 +12,7 @@ func Start(branchName string) {
 
 	branchName = helper.ReplaceSpacesWithDashes(branchName)
 
-	if helper.GetCurrentBranch() != "main\n" || helper.GetCurrentBranch() != "master\n" {
+	if helper.GetCurrentBranch() != "main" && helper.GetCurrentBranch() != "master" {
 		log.Fatal(helper.FormatMessage("You are not on the main/master branch. Please switch to the main branch before starting a new feature branch.", "warning"))
 	}
 

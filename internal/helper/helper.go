@@ -13,11 +13,12 @@ import (
 func GetCurrentBranch() string {
 	currentBranchCmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	currentBranchOutput, err := currentBranchCmd.CombinedOutput()
+	currentBranch := strings.TrimSuffix(string(currentBranchOutput), "\n")
 	if err != nil {
 		log.Fatalf("error getting current branch: %v\nOutput: %s", err, currentBranchOutput)
 	}
 
-	return string(currentBranchOutput)
+	return string(currentBranch)
 }
 
 func GetCurrentFeatureBranch() string {

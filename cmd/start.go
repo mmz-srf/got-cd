@@ -8,7 +8,7 @@ import (
 	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
-func Start(branchName string) {
+func Start(branchName string, isVerbose bool) {
 
 	branchName = helper.ReplaceSpacesWithDashes(branchName)
 
@@ -18,12 +18,18 @@ func Start(branchName string) {
 
 	fmt.Printf(helper.FormatMessage("Creating new branch: %s", "info"), branchName)
 
+	if isVerbose {
+		fmt.Printf(helper.FormatMessage("git checkout -b %s", "verbose"), branchName)
+	}
 	checkoutCmd := exec.Command("git", "checkout", "-b", branchName)
 	output, err := checkoutCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error creating new branch: %v\n%s", "error"), err, output)
 	}
 
+	if isVerbose {
+		fmt.Printf(helper.FormatMessage("git push --set-upstream origin %s", "verbose"), branchName)
+	}
 	pushCmd := exec.Command("git", "push", "--set-upstream", "origin", branchName)
 	output, err = pushCmd.CombinedOutput()
 	if err != nil {
@@ -31,7 +37,7 @@ func Start(branchName string) {
 	}
 }
 
-func StartAsk() {
+func StartAsk(debugEnabled bool) {
 	branchName, err := helper.AskForInput("Enter the name of the new feature branch:")
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error reading input: %v", "error"), err)
@@ -41,5 +47,5 @@ func StartAsk() {
 		log.Fatal(helper.FormatMessage("Branch name cannot be empty.", "error"))
 	}
 
-	Start(branchName)
+	Start(branchName, debugEnabled)
 }

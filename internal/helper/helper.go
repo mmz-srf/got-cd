@@ -59,6 +59,8 @@ func FormatMessage(message string, level string) string {
 		return fmt.Sprintf("\033[0;31m%s\033[0m\n", message) // Red
 	case "warning":
 		return fmt.Sprintf("\033[0;33m%s\033[0m\n", message) // Yellow
+	case "verbose":
+		return fmt.Sprintf("\033[0;34m%s\033[0m\n", message) // Blue
 	default:
 		return message
 	}

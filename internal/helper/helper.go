@@ -71,7 +71,7 @@ func GetDevBranch() string {
 		log.Fatalf(FormatMessage("Error getting local branches: %v", "error"), err)
 	}
 
-	reDevBranch := regexp.MustCompile(`^origin/(test|dev)-.*`)
+	reDevBranch := regexp.MustCompile(`^origin/(test|dev|develop)-.*`)
 	for _, branch := range branches {
 		if reDevBranch.MatchString(branch) {
 			devBranch = strings.Replace(branch, "origin/", "", 1)

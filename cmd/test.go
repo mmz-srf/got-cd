@@ -25,10 +25,7 @@ func Test(isVerbose bool) {
 		log.Fatalf(helper.FormatMessage("Error checking out test branch: %v\n%s", "error"), err, output)
 	}
 
-	if isVerbose {
-		fmt.Printf(helper.FormatMessage("git merge %s", "verbose"), currentFeatureBranch)
-	}
-	fmt.Printf("Merging feature branch %v into test-branch\n", currentFeatureBranch)
+	fmt.Printf("Merging feature branch %v into %v\n", currentFeatureBranch, devBranch)
 	mergeTestCmd := exec.Command("git", "merge", currentFeatureBranch)
 	output, err = mergeTestCmd.CombinedOutput()
 	if err != nil {

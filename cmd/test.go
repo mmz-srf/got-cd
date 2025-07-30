@@ -22,7 +22,7 @@ func Test() {
 		log.Fatalf(helper.FormatMessage("Error checking out test branch: %v\n%s", "error"), err, output)
 	}
 
-	fmt.Printf("Merging feature branch %v into test-branch\n", currentFeatureBranch)
+	fmt.Printf("Merging feature branch %v into %v\n", currentFeatureBranch, devBranch)
 	mergeTestCmd := exec.Command("git", "merge", currentFeatureBranch)
 	output, err = mergeTestCmd.CombinedOutput()
 	if err != nil {

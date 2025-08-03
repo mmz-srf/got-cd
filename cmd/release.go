@@ -31,27 +31,55 @@ func Release(isVerbose bool) {
 	}
 
 	currentWorkingDirectory := helper.GetCurrentWorkingDirectory()
-	releaseVersionFile, err := os.Open(currentWorkingDirectory + "/version.txt")
-	if err != nil {
-		log.Fatalf(helper.FormatMessage("Error opening version.txt: %v", "error"), err)
-	}
-	defer releaseVersionFile.Close()
+	var releaseVersion string
+	if _, err := os.Stat(currentWorkingDirectory + "/version.txt"); err == nil {
+		releaseVersionFile, err := os.Open(currentWorkingDirectory + "/version.txt")
+		if err != nil {
+			log.Fatalf(helper.FormatMessage("Error opening version.txt: %v", "error"), err)
+		}
+		defer releaseVersionFile.Close()
 
-	releaseVersion, err := io.ReadAll(releaseVersionFile)
-	if err != nil {
-		log.Fatalf(helper.FormatMessage("Error reading version.txt: %v", "error"), err)
+		releaseVersionFromFile, err := io.ReadAll(releaseVersionFile)
+		if err != nil {
+			log.Fatalf(helper.FormatMessage("Error reading version.txt: %v", "error"), err)
+		}
+		releaseVersion = string(releaseVersionFromFile)
+	} else {
+		var latestTag string
+		if isVerbose {
+			fmt.Print(helper.FormatMessage("git fetch --tags", "verbose"))
+		}
+		fetchTagsCmd, err := exec.Command("git", "fetch", "--tags").CombinedOutput()
+		if err != nil {
+			log.Fatalf(helper.FormatMessage("Error fetching tags: %v\n%s", "error"), err, fetchTagsCmd)
+		}
+
+		if isVerbose {
+			fmt.Print(helper.FormatMessage("git describe --tags --abbrev=0", "verbose"))
+		}
+		latestTagCmd, err := exec.Command("git", "describe", "--tags", "--abbrev=0").CombinedOutput()
+		if err != nil {
+			log.Fatalf(helper.FormatMessage("Error getting latest tag: %v\n%s", "error"), err, latestTagCmd)
+		}
+		latestTag = strings.TrimSpace(string(latestTagCmd))
+		fmt.Printf(helper.FormatMessage("Latest tag found: %s\n", "info"), latestTag)
+		fmt.Print(helper.FormatMessage("version.txt not found. Please specify version to release:", "info"))
+
+		var manualVersion string
+		fmt.Scan(&manualVersion)
+		releaseVersion = manualVersion
 	}
 
-	fmt.Printf(helper.FormatMessage("Releasing version: %s", "info"), string(releaseVersion))
+	fmt.Printf(helper.FormatMessage("Releasing version: %s", "info"), releaseVersion)
 	fmt.Println((helper.FormatMessage("What is this release about?", "info")))
 	var releaseMessage string
 	reader := bufio.NewReader(os.Stdin)
-	releaseMessage, err = reader.ReadString('\n')
+	releaseMessage, err := reader.ReadString('\n')
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error reading release message: %v", "error"), err)
 	}
 	releaseMessage = strings.TrimSpace(releaseMessage)
-	versionTag := "v" + string(releaseVersion)
+	versionTag := string(releaseVersion)
 	versionTagTrimmed := strings.TrimSuffix(versionTag, "\n")
 	if isVerbose {
 		fmt.Printf(helper.FormatMessage("git tag -a -m \"%s\" %s", "verbose"), releaseMessage, versionTagTrimmed)

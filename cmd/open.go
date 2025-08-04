@@ -24,7 +24,7 @@ func Open() {
 		log.Fatal(helper.FormatMessage("Could not determine the remote URL. Please ensure you have a remote set up for this repository.", "error"))
 	}
 
-	fmt.Printf(helper.FormatMessage("Opening feature branch in the browser for repository : "+repoUrl, "info"))
+	fmt.Printf(helper.FormatMessage("Opening feature branch in the browser for repository %v", "info"), repoUrl)
 
 	url := fmt.Sprintf("%s/tree/%s", repoUrl, currentFeatureBranch)
 

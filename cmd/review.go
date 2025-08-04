@@ -95,7 +95,7 @@ func openPRInBrowser() {
 
 	url := fmt.Sprintf("%s/compare/%s?expand=1", repoUrl, currentFeatureBranch)
 
-	fmt.Printf(helper.FormatMessage("Opening feature PR in the browser for repository : "+url, "info"))
+	fmt.Printf(helper.FormatMessage("Opening feature PR in the browser for repository %v ", "info"), url)
 
 	err = browser.OpenURL(url)
 	if err != nil {

@@ -16,13 +16,22 @@ func Start(branchName string, isVerbose bool) {
 		log.Fatal(helper.FormatMessage("You are not on the main/master branch. Please switch to the main branch before starting a new feature branch.", "warning"))
 	}
 
+	if isVerbose {
+		fmt.Print(helper.FormatMessage("git pull", "verbose"))
+	}
+	pullCmd := exec.Command("git", "pull")
+	output, err := pullCmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf(helper.FormatMessage("Error pulling latest changes: %v\n%s", "error"), err, output)
+	}
+
 	fmt.Printf(helper.FormatMessage("Creating new branch: %s", "info"), branchName)
 
 	if isVerbose {
 		fmt.Printf(helper.FormatMessage("git checkout -b %s", "verbose"), branchName)
 	}
 	checkoutCmd := exec.Command("git", "checkout", "-b", branchName)
-	output, err := checkoutCmd.CombinedOutput()
+	output, err = checkoutCmd.CombinedOutput()
 	if err != nil {
 		log.Fatalf(helper.FormatMessage("Error creating new branch: %v\n%s", "error"), err, output)
 	}

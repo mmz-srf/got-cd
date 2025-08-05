@@ -50,7 +50,8 @@ var releaseCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		isVerbose := cmd.Flag("verbose").Value.String() == "true"
-		Release(isVerbose)
+		isShortTag := cmd.Flag("short-tag").Value.String() == "true"
+		Release(isVerbose, isShortTag)
 	},
 }
 
@@ -128,5 +129,7 @@ func init() {
 	rootCmd.AddCommand(openCmd)
 	rootCmd.AddCommand(loginCmd)
 	var Verbose bool
+	var ShortTag bool
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Enable verbose mode")
+	rootCmd.PersistentFlags().BoolVarP(&ShortTag, "short-tag", "s", false, "Use short tag format (e.g., 1.0.0 instead of v1.0.0)")
 }

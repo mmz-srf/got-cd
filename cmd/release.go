@@ -12,7 +12,7 @@ import (
 	"github.com/michizubi-SRF/got-cd/internal/helper"
 )
 
-func Release(isVerbose bool) {
+func Release(isVerbose bool, isShortTag bool) {
 	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
 	if currentFeatureBranch != "main" {
 		println(helper.FormatMessage("You are not on the main branch. Please switch to the main branch before releasing.", "warning"))
@@ -70,7 +70,16 @@ func Release(isVerbose bool) {
 		releaseVersion = manualVersion
 	}
 
-	fmt.Printf(helper.FormatMessage("Releasing version: %s", "info"), releaseVersion)
+	var versionTag string
+	if isShortTag {
+		versionTag = string(releaseVersion)
+	} else {
+		versionTag = "v" + string(releaseVersion)
+	}
+
+	versionTagTrimmed := strings.TrimSuffix(versionTag, "\n")
+
+	fmt.Printf(helper.FormatMessage("Releasing version: %s", "info"), versionTagTrimmed)
 	fmt.Println((helper.FormatMessage("What is this release about?", "info")))
 	var releaseMessage string
 	reader := bufio.NewReader(os.Stdin)
@@ -79,8 +88,7 @@ func Release(isVerbose bool) {
 		log.Fatalf(helper.FormatMessage("Error reading release message: %v", "error"), err)
 	}
 	releaseMessage = strings.TrimSpace(releaseMessage)
-	versionTag := string(releaseVersion)
-	versionTagTrimmed := strings.TrimSuffix(versionTag, "\n")
+
 	if isVerbose {
 		fmt.Printf(helper.FormatMessage("git tag -a -m \"%s\" %s", "verbose"), releaseMessage, versionTagTrimmed)
 	}

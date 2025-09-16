@@ -5,7 +5,7 @@ Go implementation of https://github.com/gitcd-io/gitcd for learning purposes
 ## Usage
 ### Create Config file
 ```
-cp example.config.json <UserHomeDir>/.git-cd/config.json
+cp example.config.json <UserHomeDir>/.got-cd/config.json
 ```
 
 ### Run git-cd

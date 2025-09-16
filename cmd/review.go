@@ -51,7 +51,9 @@ func openPR(config helper.Config, currentFeatureBranch string) {
 		}
 	}
 	if foundExistingPR {
-		fmt.Println(helper.FormatMessage("PR already exists, do you want to open it in the browser? (y/n)", "warning"))
+		fmt.Printf(helper.FormatMessage("PR already exists -> %v", "warning"), existingOpenPR.GetHTMLURL())
+		fmt.Print(helper.FormatMessage("Do you want to open it in the browser? (y/n)", "info"))
+
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {
@@ -69,7 +71,8 @@ func openPR(config helper.Config, currentFeatureBranch string) {
 		if err != nil {
 			log.Fatalf(helper.FormatMessage("Error creating pull request: %v\n", "error"), err)
 		}
-		fmt.Println(helper.FormatMessage("Do you want to open the PR in your browser? (y/n)", "info"))
+		fmt.Printf(helper.FormatMessage("Created PR -> %v", "info"), pr.GetHTMLURL())
+		fmt.Print(helper.FormatMessage("Do you want to open it in your browser? (y/n)", "info"))
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {

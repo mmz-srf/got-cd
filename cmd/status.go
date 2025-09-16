@@ -37,6 +37,7 @@ func Status() {
 
 	for _, existingPR := range existingOpenPRs {
 		if existingPR.GetTitle() == fmt.Sprint(currentFeatureBranch) {
+			fmt.Printf(helper.FormatMessage("Found existing PR: %v -> %v\n", "info"), existingPR.GetTitle(), existingPR.GetHTMLURL())
 			fmt.Printf(helper.FormatMessage("State of the PR is: %v \n", "info"), existingPR.GetState())
 			reviews, _, err := client.PullRequests.ListReviews(ctx, githubOrganization, string(repoName), *existingPR.Number, &github.ListOptions{})
 			if err != nil {

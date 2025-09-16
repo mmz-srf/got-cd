@@ -16,7 +16,7 @@ func Release(isVerbose bool, isShortTag bool) {
 	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
 	if currentFeatureBranch != "main" {
 		println(helper.FormatMessage("You are not on the main branch. Please switch to the main branch before releasing.", "warning"))
-		fmt.Println(helper.FormatMessage("Do you want to switch to the main branch? (y/n)", "info"))
+		fmt.Print(helper.FormatMessage("Do you want to switch to the main branch? (y/n)", "info"))
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {

@@ -14,7 +14,7 @@ func Finish(isVerbose bool) {
 		log.Fatal(helper.FormatMessage("You are on the main branch. Switch to your feature branch first.", "error"))
 	}
 
-	fmt.Printf(helper.FormatMessage("Mergin feature branch %s into main\n", "info"), currentFeatureBranch)
+	fmt.Printf(helper.FormatMessage("Merging feature branch %s into main\n", "info"), currentFeatureBranch)
 
 	if isVerbose {
 		fmt.Print(helper.FormatMessage("git checkout main", "verbose"))
@@ -40,7 +40,7 @@ func Finish(isVerbose bool) {
 		log.Fatalf(helper.FormatMessage("Error pushing changes to main branch: %v\n", "error"), err)
 	}
 
-	fmt.Println(helper.FormatMessage("Do you want to delete your feature branch? (y/n)", "warning"))
+	fmt.Print(helper.FormatMessage("Do you want to delete your feature branch? (y/n)", "warning"))
 	var response string
 	fmt.Scan(&response)
 	if response == "y" {

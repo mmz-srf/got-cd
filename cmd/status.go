@@ -12,8 +12,8 @@ func Status() {
 	currentFeatureBranch := helper.GetCurrentFeatureBranch()
 	repoName := helper.GetCurrentRepoName()
 
-	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
-		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
+	if currentFeatureBranch == "main" || currentFeatureBranch == "master" || currentFeatureBranch == "test" {
+		log.Fatal(helper.FormatMessage("You are on the main/master or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 
 	ctx, client := helper.Authenticate()

@@ -153,3 +153,13 @@ func ReplaceSpacesWithDashes(input string) string {
 	re := regexp.MustCompile(`\s+`)
 	return re.ReplaceAllString(input, "-")
 }
+
+func GetNameOfDefaultBranch() string {
+	cmd := exec.Command("git", "remote", "show", "origin", "|", "awk", "/HEAD branch|Hauptbranch/ {print $NF}")
+	output, err := cmd.Output()
+	if err != nil {
+		log.Fatalf("Error getting default branch name: %v\nOutput: %s", err, output)
+	}
+	defaultBranch := strings.TrimSpace(string(output))
+	return defaultBranch
+}

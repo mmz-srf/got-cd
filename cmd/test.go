@@ -12,7 +12,7 @@ import (
 func Test(isVerbose bool) {
 	devBranch := helper.GetDevBranch()
 	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
-	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
+	if currentFeatureBranch == "main" || currentFeatureBranch == "master" || currentFeatureBranch == "test" {
 		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 

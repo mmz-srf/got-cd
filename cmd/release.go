@@ -14,18 +14,19 @@ import (
 
 func Release(isVerbose bool, isShortTag bool) {
 	currentFeatureBranch := strings.TrimSuffix(helper.GetCurrentBranch(), "\n")
-	if currentFeatureBranch != "main" {
-		println(helper.FormatMessage("You are not on the main branch. Please switch to the main branch before releasing.", "warning"))
-		fmt.Print(helper.FormatMessage("Do you want to switch to the main branch? (y/n)", "info"))
+	if currentFeatureBranch != "main" || currentFeatureBranch != "master" {
+		println(helper.FormatMessage("You are not on the main/master branch. Please switch to the main branch before releasing.", "warning"))
+		fmt.Print(helper.FormatMessage("Do you want to switch to the main/master branch? (y/n)", "info"))
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {
 			if isVerbose {
-				fmt.Print(helper.FormatMessage("git checkout main", "verbose"))
+				fmt.Print(helper.FormatMessage("git checkout main/master", "verbose"))
 			}
-			switchCmd, err := exec.Command("git", "checkout", "main").CombinedOutput()
+			defaultBranch := helper.GetNameOfDefaultBranch()
+			switchCmd, err := exec.Command("git", "checkout", defaultBranch).CombinedOutput()
 			if err != nil {
-				log.Fatalf(helper.FormatMessage("Error switching to main branch: %v\nOutput: %s", "error"), err, switchCmd)
+				log.Fatalf(helper.FormatMessage("Error switching to main/master branch: %v\nOutput: %s", "error"), err, switchCmd)
 			}
 		}
 	}

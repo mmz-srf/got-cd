@@ -13,8 +13,8 @@ import (
 func Preview() {
 	currentFeatureBranch := helper.GetCurrentFeatureBranch()
 
-	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
-		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
+	if currentFeatureBranch == "main" || currentFeatureBranch == "master" || currentFeatureBranch == "test" {
+		log.Fatal(helper.FormatMessage("You are on the main/master or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 
 	config, err := helper.ReadConfigFile()
@@ -31,7 +31,7 @@ func openPR(config helper.Config, currentFeatureBranch string) {
 	githubOrganization := config.GithubOrganization
 	repoName := helper.GetCurrentRepoName()
 
-	fmt.Printf(helper.FormatMessage("Creating pull request from feature branch %v to main\n", "info"), currentFeatureBranch)
+	fmt.Printf(helper.FormatMessage("Creating pull request from feature branch %v to main/master\n", "info"), currentFeatureBranch)
 	ctx, client := helper.Authenticate()
 
 	existingOpenPRs, _, err := client.PullRequests.List(ctx, githubOrganization, string(repoName), &github.PullRequestListOptions{

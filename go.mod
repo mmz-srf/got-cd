@@ -6,7 +6,7 @@ require (
 	github.com/google/go-github/v73 v73.0.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/spf13/cobra v1.10.1
-	golang.org/x/oauth2 v0.31.0
+	golang.org/x/oauth2 v0.33.0
 )
 
 require (

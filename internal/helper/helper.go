@@ -155,7 +155,7 @@ func ReplaceSpacesWithDashes(input string) string {
 }
 
 func GetNameOfDefaultBranch() string {
-	cmd := exec.Command("git", "remote", "show", "origin", "|", "awk", "/HEAD branch|Hauptbranch/ {print $NF}")
+	cmd := exec.Command("bash", "-c", "git remote show origin|awk '/HEAD branch|Hauptbranch/ {print $NF}'")
 	output, err := cmd.Output()
 	if err != nil {
 		log.Fatalf("Error getting default branch name: %v\nOutput: %s", err, output)

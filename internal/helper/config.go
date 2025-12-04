@@ -12,7 +12,7 @@ type Config struct {
 	GithubOrganization string `json:"github_organization"`
 }
 
-func ReadConfigFile() Config {
+func ReadConfigFile() (Config, error) {
 	usersHomeDir, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatalf(FormatMessage("Error getting user home directory: %v\n", "error"), err)
@@ -20,12 +20,12 @@ func ReadConfigFile() Config {
 	configFile := usersHomeDir + "/.got-cd/config.json"
 	fileBytes, err := os.ReadFile(configFile)
 	if err != nil {
-		log.Fatalf(FormatMessage("Error opening config file: %v\n", "error"), err)
+		return Config{}, err
 	}
 
 	var config Config
 	json.NewDecoder((bytes.NewBuffer(fileBytes))).Decode(&config)
 
-	return config
+	return config, nil
 
 }

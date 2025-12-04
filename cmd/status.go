@@ -12,13 +12,17 @@ func Status() {
 	currentFeatureBranch := helper.GetCurrentFeatureBranch()
 	repoName := helper.GetCurrentRepoName()
 
-	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
-		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
+	if currentFeatureBranch == "main" || currentFeatureBranch == "master" || currentFeatureBranch == "test" {
+		log.Fatal(helper.FormatMessage("You are on the main/master or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 
 	ctx, client := helper.Authenticate()
 
-	config := helper.ReadConfigFile()
+	config, err := helper.ReadConfigFile()
+	if err != nil {
+		log.Fatalf(helper.FormatMessage("Status: Error opening config file: %v\n", "error"), err)
+	}
+
 	githubOrganization := config.GithubOrganization
 	existingOpenPRs, _, err := client.PullRequests.List(ctx, githubOrganization, string(repoName), &github.PullRequestListOptions{
 		Head: fmt.Sprint(currentFeatureBranch),
@@ -33,6 +37,7 @@ func Status() {
 
 	for _, existingPR := range existingOpenPRs {
 		if existingPR.GetTitle() == fmt.Sprint(currentFeatureBranch) {
+			fmt.Printf(helper.FormatMessage("Found existing PR: %v -> %v\n", "info"), existingPR.GetTitle(), existingPR.GetHTMLURL())
 			fmt.Printf(helper.FormatMessage("State of the PR is: %v \n", "info"), existingPR.GetState())
 			reviews, _, err := client.PullRequests.ListReviews(ctx, githubOrganization, string(repoName), *existingPR.Number, &github.ListOptions{})
 			if err != nil {

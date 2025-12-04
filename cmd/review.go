@@ -7,21 +7,33 @@ import (
 
 	"github.com/google/go-github/v73/github"
 	"github.com/michizubi-SRF/got-cd/internal/helper"
+	"github.com/pkg/browser"
 )
 
 func Preview() {
 	currentFeatureBranch := helper.GetCurrentFeatureBranch()
-	repoName := helper.GetCurrentRepoName()
 
-	if currentFeatureBranch == "main" || currentFeatureBranch == "test" {
-		log.Fatal(helper.FormatMessage("You are on the main or on the test branch. Please switch to a feature branch first.\n", "warning"))
+	if currentFeatureBranch == "main" || currentFeatureBranch == "master" || currentFeatureBranch == "test" {
+		log.Fatal(helper.FormatMessage("You are on the main/master or on the test branch. Please switch to a feature branch first.\n", "warning"))
 	}
 
-	fmt.Printf(helper.FormatMessage("Creating pull request from feature branch %v to main\n", "info"), currentFeatureBranch)
+	config, err := helper.ReadConfigFile()
+	if err != nil {
+		openPRInBrowser()
+		return
+	}
+
+	openPR(config, currentFeatureBranch)
+
+}
+
+func openPR(config helper.Config, currentFeatureBranch string) {
+	githubOrganization := config.GithubOrganization
+	repoName := helper.GetCurrentRepoName()
+
+	fmt.Printf(helper.FormatMessage("Creating pull request from feature branch %v to main/master\n", "info"), currentFeatureBranch)
 	ctx, client := helper.Authenticate()
 
-	config := helper.ReadConfigFile()
-	githubOrganization := config.GithubOrganization
 	existingOpenPRs, _, err := client.PullRequests.List(ctx, githubOrganization, string(repoName), &github.PullRequestListOptions{
 		State: "open",
 		Head:  fmt.Sprint(currentFeatureBranch),
@@ -39,7 +51,9 @@ func Preview() {
 		}
 	}
 	if foundExistingPR {
-		fmt.Println(helper.FormatMessage("PR already exists, do you want to open it in the browser? (y/n)", "warning"))
+		fmt.Printf(helper.FormatMessage("PR already exists -> %v", "warning"), existingOpenPR.GetHTMLURL())
+		fmt.Print(helper.FormatMessage("Do you want to open it in the browser? (y/n)", "info"))
+
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {
@@ -57,7 +71,8 @@ func Preview() {
 		if err != nil {
 			log.Fatalf(helper.FormatMessage("Error creating pull request: %v\n", "error"), err)
 		}
-		fmt.Println(helper.FormatMessage("Do you want to open the PR in your browser? (y/n)", "info"))
+		fmt.Printf(helper.FormatMessage("Created PR -> %v", "info"), pr.GetHTMLURL())
+		fmt.Print(helper.FormatMessage("Do you want to open it in your browser? (y/n)", "info"))
 		var response string
 		fmt.Scan(&response)
 		if response == "y" {
@@ -67,5 +82,26 @@ func Preview() {
 			}
 		}
 	}
+}
 
+func openPRInBrowser() {
+
+	currentFeatureBranch := helper.GetCurrentFeatureBranch()
+	if currentFeatureBranch == "" {
+		log.Fatal(helper.FormatMessage("No feature branch is currently checked out. Please switch to a feature branch before opening it in the browser.", "warning"))
+	}
+
+	repoUrl, err := helper.GetRemoteUrl()
+	if err != nil {
+		log.Fatal(helper.FormatMessage("Could not determine the remote URL. Please ensure you have a remote set up for this repository.", "error"))
+	}
+
+	url := fmt.Sprintf("%s/compare/%s?expand=1", repoUrl, currentFeatureBranch)
+
+	fmt.Printf(helper.FormatMessage("Opening feature PR in the browser for repository %v ", "info"), url)
+
+	err = browser.OpenURL(url)
+	if err != nil {
+		log.Fatal(helper.FormatMessage(fmt.Sprintf("Failed to open browser: %v", err), "error"))
+	}
 }

@@ -13,11 +13,12 @@ import (
 func GetCurrentBranch() string {
 	currentBranchCmd := exec.Command("git", "symbolic-ref", "--short", "HEAD")
 	currentBranchOutput, err := currentBranchCmd.CombinedOutput()
+	currentBranch := strings.TrimSuffix(string(currentBranchOutput), "\n")
 	if err != nil {
 		log.Fatalf("error getting current branch: %v\nOutput: %s", err, currentBranchOutput)
 	}
 
-	return string(currentBranchOutput)
+	return string(currentBranch)
 }
 
 func GetCurrentFeatureBranch() string {
@@ -58,6 +59,8 @@ func FormatMessage(message string, level string) string {
 		return fmt.Sprintf("\033[0;31m%s\033[0m\n", message) // Red
 	case "warning":
 		return fmt.Sprintf("\033[0;33m%s\033[0m\n", message) // Yellow
+	case "verbose":
+		return fmt.Sprintf("\033[0;34m%s\033[0m\n", message) // Blue
 	default:
 		return message
 	}
@@ -191,7 +194,19 @@ func GetRemoteUrl() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error getting remote URL: %w", err)
 	}
-	return strings.TrimSpace(string(output)), nil
+
+	repoUrl := strings.TrimSpace(string(output))
+
+	if len(repoUrl) > 0 && strings.HasPrefix(repoUrl, "git@") {
+		// Pattern: git@hostname:username/repository.git
+		// Example: git@github.com:mmz-srf/got-cd.git
+		gitUrlPattern := regexp.MustCompile(`^git@([^:]+):(.+)\.git$`)
+		if matches := gitUrlPattern.FindStringSubmatch(repoUrl); matches != nil {
+			repoUrl = fmt.Sprintf("https://%s/%s", matches[1], matches[2])
+		}
+	}
+
+	return strings.TrimSpace(repoUrl), nil
 }
 
 func AskForInput(prompt string) (string, error) {
@@ -205,4 +220,14 @@ func AskForInput(prompt string) (string, error) {
 func ReplaceSpacesWithDashes(input string) string {
 	re := regexp.MustCompile(`\s+`)
 	return re.ReplaceAllString(input, "-")
+}
+
+func GetNameOfDefaultBranch() string {
+	cmd := exec.Command("bash", "-c", "git remote show origin|awk '/HEAD branch|Hauptbranch/ {print $NF}'")
+	output, err := cmd.Output()
+	if err != nil {
+		log.Fatalf("Error getting default branch name: %v\nOutput: %s", err, output)
+	}
+	defaultBranch := strings.TrimSpace(string(output))
+	return defaultBranch
 }

@@ -10,12 +10,13 @@ var startCmd = &cobra.Command{
 	Long:  `Start a new feature branch by creating a new branch in the git repository.`,
 	//Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		isVerbose := cmd.Flag("verbose").Value.String() == "true"
 		if len(args) == 0 {
-			StartAsk()
+			StartAsk(isVerbose)
 			return
 		}
 		if len(args) == 1 {
-			Start(args[0])
+			Start(args[0], isVerbose)
 			return
 		}
 	},
@@ -27,7 +28,8 @@ var testCmd = &cobra.Command{
 	Long:  `Merge the current feature branch into the test branch in the git repository.`,
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		Test()
+		isVerbose := cmd.Flag("verbose").Value.String() == "true"
+		Test(isVerbose)
 	},
 }
 
@@ -47,7 +49,9 @@ var releaseCmd = &cobra.Command{
 	Long:  `Create a new release by pushing a new tag based on version.txt.`,
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		Release()
+		isVerbose := cmd.Flag("verbose").Value.String() == "true"
+		isShortTag := cmd.Flag("short-tag").Value.String() == "true"
+		Release(isVerbose, isShortTag)
 	},
 }
 
@@ -67,7 +71,8 @@ var finishCmd = &cobra.Command{
 	Long:  `Merge the feature branch into main.`,
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		Finish()
+		isVerbose := cmd.Flag("verbose").Value.String() == "true"
+		Finish(isVerbose)
 	},
 }
 
@@ -77,7 +82,8 @@ var cleanCmd = &cobra.Command{
 	Long:  `Clean up local branches that are not present on remote anymore.`,
 	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		Clean()
+		isVerbose := cmd.Flag("verbose").Value.String() == "true"
+		Clean(isVerbose)
 	},
 }
 
@@ -101,6 +107,16 @@ var openCmd = &cobra.Command{
 	},
 }
 
+var loginCmd = &cobra.Command{
+	Use:   "login",
+	Short: "Login to GitHub",
+	Long:  `Login to GitHub by providing your access token.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		login()
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(startCmd)
 	rootCmd.AddCommand(testCmd)
@@ -111,4 +127,9 @@ func init() {
 	rootCmd.AddCommand(cleanCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(openCmd)
+	rootCmd.AddCommand(loginCmd)
+	var Verbose bool
+	var ShortTag bool
+	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Enable verbose mode")
+	rootCmd.PersistentFlags().BoolVarP(&ShortTag, "short-tag", "s", false, "Use short tag format (e.g., 1.0.0 instead of v1.0.0)")
 }

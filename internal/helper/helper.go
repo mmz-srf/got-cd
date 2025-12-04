@@ -66,6 +66,73 @@ func FormatMessage(message string, level string) string {
 	}
 }
 
+func GetGitRoot() (string, error) {
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	output, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("could not get repository root: %w", err)
+	}
+	return strings.TrimSpace(string(output)), nil
+}
+
+func ReadGitCdConfig(key string) (string, error) {
+	repoRoot, err := GetGitRoot()
+	if err != nil {
+		return "", fmt.Errorf("could not get repository root: %w", err)
+	}
+
+	configPath := repoRoot + "/.gitcd"
+	file, err := os.Open(configPath)
+	if err != nil {
+		return "", fmt.Errorf("could not open .gitcd config file: %w", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+
+		// Skip empty lines and comments
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		// Support both "key: value" and "key=value" formats
+		var configKey, configValue string
+		if strings.Contains(line, ": ") {
+			parts := strings.SplitN(line, ": ", 2)
+			if len(parts) == 2 {
+				configKey = strings.TrimSpace(parts[0])
+				configValue = strings.TrimSpace(parts[1])
+			}
+		}
+
+		if configKey == key {
+			return configValue, nil
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return "", fmt.Errorf("error reading .gitcd config file: %w", err)
+	}
+
+	return "", fmt.Errorf("key '%s' not found in .gitcd config", key)
+}
+
+func GetDevBranchPrefix() string {
+	prefix, err := ReadGitCdConfig("test")
+	if err != nil {
+		log.Printf(FormatMessage("Warning: Could not read dev-branch-prefix from config, using default", "warning"))
+		return "dev"
+	}
+
+	if prefix == "" {
+		return "dev"
+	}
+
+	return prefix
+}
+
 func GetDevBranch() string {
 	branches, err := GetRemoteBranches()
 	var devBranch string
@@ -73,7 +140,8 @@ func GetDevBranch() string {
 		log.Fatalf(FormatMessage("Error getting local branches: %v", "error"), err)
 	}
 
-	reDevBranch := regexp.MustCompile(`^origin/(test|dev|develop)-?.*`)
+	prefix := GetDevBranchPrefix()
+	reDevBranch := regexp.MustCompile(fmt.Sprintf(`^origin/(%s)-.*`, prefix))
 	for _, branch := range branches {
 		if reDevBranch.MatchString(branch) {
 			devBranch = strings.Replace(branch, "origin/", "", 1)

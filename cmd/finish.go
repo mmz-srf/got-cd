@@ -49,9 +49,13 @@ func Finish(isVerbose bool) {
 		if isVerbose {
 			fmt.Printf(helper.FormatMessage("git branch -d %s", "verbose"), currentFeatureBranch)
 		}
-		deleteBranchCmd := exec.Command("git", "branch", "-d", currentFeatureBranch)
-		if err := deleteBranchCmd.Run(); err != nil {
+		deleteLocalBranchCmd := exec.Command("git", "branch", "-d", currentFeatureBranch)
+		if err := deleteLocalBranchCmd.Run(); err != nil {
 			log.Fatalf(helper.FormatMessage("Error deleting feature branch: %v\n", "error"), err)
+		}
+		deleteRemoteBranchCmd := exec.Command("git", "push", "origin", "--delete", currentFeatureBranch)
+		if err := deleteRemoteBranchCmd.Run(); err != nil {
+			log.Fatalf(helper.FormatMessage("Error deleting remote feature branch: %v\n", "error"), err)
 		}
 		fmt.Printf(helper.FormatMessage("Feature branch %s deleted.\n", "info"), currentFeatureBranch)
 	}

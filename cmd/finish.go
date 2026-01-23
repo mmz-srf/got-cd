@@ -55,7 +55,7 @@ func Finish(isVerbose bool) {
 		}
 		deleteRemoteBranchCmd := exec.Command("git", "push", "origin", "--delete", currentFeatureBranch)
 		if err := deleteRemoteBranchCmd.Run(); err != nil {
-			log.Fatalf(helper.FormatMessage("Error deleting remote feature branch: %v\n", "error"), err)
+			fmt.Print(helper.FormatMessage("Remote feature branch already deleted:\n", "warning"))
 		}
 		fmt.Printf(helper.FormatMessage("Feature branch %s deleted.\n", "info"), currentFeatureBranch)
 	}

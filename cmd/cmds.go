@@ -107,6 +107,16 @@ var openCmd = &cobra.Command{
 	},
 }
 
+var initCmd = &cobra.Command{
+	Use:   "init",
+	Short: "Initialize a .gitcd config file",
+	Long:  `Interactively create a .gitcd configuration file in the root of the current git repository.`,
+	Args:  cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		Init()
+	},
+}
+
 var loginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "Login to GitHub",
@@ -128,6 +138,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(openCmd)
 	rootCmd.AddCommand(loginCmd)
+	rootCmd.AddCommand(initCmd)
 	var Verbose bool
 	var ShortTag bool
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Enable verbose mode")

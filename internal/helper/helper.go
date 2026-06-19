@@ -122,7 +122,7 @@ func ReadGitCdConfig(key string) (string, error) {
 func GetDevBranchPrefix() string {
 	prefix, err := ReadGitCdConfig("test")
 	if err != nil {
-		log.Printf(FormatMessage("Warning: Could not read dev-branch-prefix from config, using default", "warning"))
+		log.Print(FormatMessage("Warning: Could not read dev-branch-prefix from config, using default", "warning"))
 		return "dev"
 	}
 

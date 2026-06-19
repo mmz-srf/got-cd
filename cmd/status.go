@@ -44,7 +44,7 @@ func Status() {
 				log.Fatalf(helper.FormatMessage("Error getting reviews for PR: %v\n", "error"), err)
 			}
 			for _, review := range reviews {
-				fmt.Printf(helper.FormatMessage("Review Comment by %s: %s\n", "info"), review.GetUser().GetLogin(), review.GetBody())
+				fmt.Printf(helper.FormatMessage("Review by %s:\nstate=%s\ncomment=%s", "info"), review.GetUser().GetLogin(), review.GetState(), review.GetBody())
 			}
 
 			break

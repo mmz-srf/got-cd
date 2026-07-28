@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/google/go-github/v73/github"
 	"github.com/michizubi-SRF/got-cd/internal/helper"
@@ -44,7 +45,19 @@ func Status() {
 				log.Fatalf(helper.FormatMessage("Error getting reviews for PR: %v\n", "error"), err)
 			}
 			for _, review := range reviews {
-				fmt.Printf(helper.FormatMessage("Review by %s:\nstate=%s\ncomment=%s", "info"), review.GetUser().GetLogin(), review.GetState(), review.GetBody())
+				comment := review.GetBody()
+				if comment == "" {
+					reviewComments, _, err := client.PullRequests.ListReviewComments(ctx, githubOrganization, string(repoName), *existingPR.Number, review.GetID(), &github.ListOptions{})
+					if err != nil {
+						log.Fatalf(helper.FormatMessage("Error getting review comments for PR: %v\n", "error"), err)
+					}
+					bodies := make([]string, 0, len(reviewComments))
+					for _, reviewComment := range reviewComments {
+						bodies = append(bodies, reviewComment.GetBody())
+					}
+					comment = strings.Join(bodies, "\n")
+				}
+				fmt.Printf(helper.FormatMessage("Review by %s:\nstate=%s\ncomment=%s\n", "info"), review.GetUser().GetLogin(), review.GetState(), comment)
 			}
 
 			break
